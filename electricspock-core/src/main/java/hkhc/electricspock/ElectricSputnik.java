@@ -26,7 +26,7 @@ import org.junit.runner.manipulation.Sortable;
 import org.junit.runner.manipulation.Sorter;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
-import org.robolectric.internal.SdkEnvironment;
+import org.robolectric.internal.AndroidSandbox;
 import org.spockframework.runtime.Sputnik;
 import org.spockframework.runtime.model.SpecInfo;
 
@@ -48,7 +48,7 @@ import spock.lang.Title;
 
 public class ElectricSputnik extends Runner implements Filterable, Sortable {
 
-    private SdkEnvironment sdkEnvironment;
+    private AndroidSandbox AndroidSandbox;
 
     /* it is used to setup Robolectric infrastructure, and not used to run actual test cases */
     private ContainedRobolectricTestRunner containedRunner;
@@ -73,8 +73,8 @@ public class ElectricSputnik extends Runner implements Filterable, Sortable {
         (new RobolectricVersionChecker()).checkRobolectricVersion();
 
         containedRunner = new ContainedRobolectricTestRunner(specClass);
-        sdkEnvironment = containedRunner.getContainedSdkEnvironment();
-        specInfoClass = sdkEnvironment.bootstrappedClass(SpecInfo.class);
+        AndroidSandbox = containedRunner.getContainedAndroidSandbox();
+        specInfoClass = AndroidSandbox.bootstrappedClass(SpecInfo.class);
 
         // Since we have bootstrappedClass we may properly initialize
         sputnik = createSputnik(specClass);
@@ -91,11 +91,11 @@ public class ElectricSputnik extends Runner implements Filterable, Sortable {
      */
     private Runner createSputnik(Class<? extends Specification> specClass) {
 
-        Class bootstrappedTestClass = sdkEnvironment.bootstrappedClass(specClass);
+        Class bootstrappedTestClass = AndroidSandbox.bootstrappedClass(specClass);
 
         try {
 
-            return (Runner)sdkEnvironment
+            return (Runner)AndroidSandbox
                     .bootstrappedClass(Sputnik.class)
                     .getConstructor(Class.class)
                     .newInstance(bootstrappedTestClass);
@@ -167,7 +167,7 @@ public class ElectricSputnik extends Runner implements Filterable, Sortable {
     private Constructor getInterceptorConstructor() {
 
         try {
-            return sdkEnvironment
+            return AndroidSandbox
                     .bootstrappedClass(ElectricSpockInterceptor.class)
                     .getConstructor(
                             specInfoClass,

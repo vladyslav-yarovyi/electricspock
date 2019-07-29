@@ -6,7 +6,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.internal.SdkEnvironment;
+import org.robolectric.internal.AndroidSandbox;
 import org.robolectric.internal.bytecode.InstrumentationConfiguration;
 
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
 
     private Class<? extends Specification> specClass = null;
     private FrameworkMethod placeholderMethod = null;
-    private SdkEnvironment sdkEnvironment = null;
+    private AndroidSandbox AndroidSandbox = null;
     private Method bootstrapedMethod = null;
 
     /*
@@ -85,11 +85,11 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
     Method createBootstrapedMethod() {
 
         FrameworkMethod placeholderMethod = getPlaceHolderMethod();
-        SdkEnvironment sdkEnvironment = getContainedSdkEnvironment();
+        AndroidSandbox AndroidSandbox = getContainedAndroidSandbox();
 
         // getTestClass().getJavaClass() should always be PlaceholderTest.class,
         // load under Robolectric's class loader
-        Class bootstrappedTestClass = sdkEnvironment.bootstrappedClass(
+        Class bootstrappedTestClass = AndroidSandbox.bootstrappedClass(
                 getTestClass().getJavaClass());
 
         return getMethod(bootstrappedTestClass, placeholderMethod.getMethod().getName());
@@ -109,19 +109,19 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
 
     }
 
-    public SdkEnvironment getContainedSdkEnvironment() {
+    public AndroidSandbox getContainedAndroidSandbox() {
 
-        if (sdkEnvironment==null) {
-            sdkEnvironment = getSandbox(getPlaceHolderMethod());
-            configureShadows(getPlaceHolderMethod(), sdkEnvironment);
+        if (AndroidSandbox==null) {
+            AndroidSandbox = getSandbox(getPlaceHolderMethod());
+            configureSandbox(AndroidSandbox, getPlaceHolderMethod());
         }
 
-        return sdkEnvironment;
+        return AndroidSandbox;
 
     }
 
     public void containedBeforeTest() throws Throwable {
-        super.beforeTest(getContainedSdkEnvironment(), getPlaceHolderMethod(), getBootstrapedMethod());
+        super.beforeTest(getContainedAndroidSandbox(), getPlaceHolderMethod(), getBootstrapedMethod());
     }
 
     public void containedAfterTest() {

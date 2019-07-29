@@ -50,7 +50,7 @@ public class ElectricSpockInterceptor extends AbstractMethodInterceptor {
     public void interceptSpecExecution(IMethodInvocation invocation) throws Throwable {
 
         Thread.currentThread().setContextClassLoader(
-                containedTestRunner.getContainedSdkEnvironment().getRobolectricClassLoader());
+                containedTestRunner.getContainedAndroidSandbox().getRobolectricClassLoader());
 
         try {
             containedTestRunner.containedBeforeTest();
