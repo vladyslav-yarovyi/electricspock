@@ -128,6 +128,10 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
         super.afterTest(getPlaceHolderMethod(), getBootstrapedMethod());
     }
 
+    protected void finallyAfterTest() {
+        super.finallyAfterTest(getPlaceHolderMethod());
+    }
+
     /**
      * Get @Config declaration from class or method declaration.
      * If @Config is not available at method declaration, we delegate the task to the original
