@@ -128,7 +128,7 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
         super.afterTest(getPlaceHolderMethod(), getBootstrapedMethod());
     }
 
-    protected void finallyAfterTest() {
+    public void finallyAfterTest() {
         super.finallyAfterTest(getPlaceHolderMethod());
     }
 
