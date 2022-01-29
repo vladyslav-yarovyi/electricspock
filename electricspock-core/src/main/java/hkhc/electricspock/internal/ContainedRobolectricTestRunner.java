@@ -141,15 +141,19 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
      */
     @Override
     public Config getConfig(Method method) {
-        Config baseConfig = super.getConfig(method);
-        Config config = specClass.getAnnotation(Config.class);
-        if (config==null) {
-            return baseConfig;
-        }
-        else {
-            return new Config.Builder(baseConfig).overlay(config).build();
+        Config baseConfig = null;
+        try {
+            baseConfig = super.getConfig(method);
+        } catch (UnsupportedOperationException e) {
         }
 
+        Config config = specClass.getAnnotation(Config.class);
+
+        if (config == null && baseConfig != null) {
+            return baseConfig;
+        } else {
+            return new Config.Builder(baseConfig).overlay(config).build();
+        }
     }
 
 
