@@ -5,10 +5,10 @@ import android.app.Fragment
 import android.app.FragmentManager
 import android.app.FragmentTransaction
 import android.util.Log
+import electricspock.R
 import hkhc.electricspock.ElectricSpecification
 import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.support.v4.SupportFragmentTestUtil
 import org.robolectric.util.FragmentTestUtil
 
 /**
@@ -89,7 +89,7 @@ class HelloWorldFragmentSpec extends ElectricSpecification {
 
         given: "Given the fragment"
         def fragment = new SupportMainFragment()
-        SupportFragmentTestUtil.startVisibleFragment(fragment)
+//        SupportFragmentTestUtil.startVisibleFragment(fragment)
 
         when: "Accessing the textview member variable"
         def text = fragment.helloWorldText.text

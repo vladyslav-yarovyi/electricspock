@@ -17,13 +17,13 @@
 
 apply plugin: 'java-library'
 apply plugin: 'groovy'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 
 artifactId='electricspock-core'
 group='hkhc.electricspock'
 
-targetCompatibility = '1.7'
-sourceCompatibility = '1.7'
+//targetCompatibility = '17'
+//sourceCompatibility = '17'
 
 sourceSets {
     test {
@@ -40,15 +40,22 @@ dependencies {
     testRuntimeOnly files("build/classes/groovy/test")
     testRuntimeOnly files("build/classes/groovy/main")
 
-    implementation "org.robolectric:robolectric:4.3"
-    implementation 'org.codehaus.groovy:groovy-all:2.5.7'
+    implementation "org.robolectric:robolectric:4.11.1"
+    implementation 'org.codehaus.groovy:groovy-all:2.5.23'
     implementation "org.spockframework:spock-core:1.3-groovy-2.5"
+//    implementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+//    implementation 'org.spockframework:spock-junit4:2.3-groovy-3.0'
 
     implementation 'org.jetbrains:annotations-java5:15.0'
-    implementation 'org.robolectric:android-all:9-robolectric-4913185-2'
+    implementation 'org.robolectric:android-all:14-robolectric-10818077'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.1'
     testImplementation 'org.assertj:assertj-core:2.6.0'
 
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17) // Specify the Java version you want to use
+    }
+}
