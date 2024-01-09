@@ -30,7 +30,6 @@ import static junit.framework.Assert.assertEquals;
  */
 
 @RunWith(RobolectricTestRunner.class)
-@Ignore
 public class HelloWorldTest {
 
     @Test

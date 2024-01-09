@@ -26,7 +26,7 @@ import org.junit.runner.manipulation.Sortable;
 import org.junit.runner.manipulation.Sorter;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
-import org.robolectric.internal.SdkEnvironment;
+import org.robolectric.internal.AndroidSandbox;
 import org.spockframework.runtime.Sputnik;
 import org.spockframework.runtime.model.SpecInfo;
 
@@ -48,7 +48,7 @@ import spock.lang.Title;
 
 public class ElectricSputnik extends Runner implements Filterable, Sortable {
 
-    private SdkEnvironment sdkEnvironment;
+    private AndroidSandbox sdkEnvironment;
 
     /* it is used to setup Robolectric infrastructure, and not used to run actual test cases */
     private ContainedRobolectricTestRunner containedRunner;

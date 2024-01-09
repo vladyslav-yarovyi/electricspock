@@ -17,14 +17,17 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'groovyx.android'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    namespace "hkhc.electricspock.sample"
+
+    compileSdkVersion 34
+    buildToolsVersion "34.0.0"
     defaultConfig {
         applicationId "hkhc.electricspock.sample"
-        minSdkVersion 14
-        targetSdkVersion 24
+        minSdkVersion 21
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -38,6 +41,32 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE'
     }
+
+//    applicationVariants.all { variant ->
+//        afterEvaluate {
+//            if (variant.name == 'debug') {
+//                def testName = ":${project.name}:compile${variant.name.capitalize()}UnitTestGroovyWithGroovyc"
+//                tasks.matching { it.name.startsWith('test') && it.name.endsWith('UnitTest') }.all {
+//                    dependsOn testName
+//                    mustRunAfter testName
+//                }
+//            }
+//        }
+//    }
+
+    applicationVariants.all { variant ->
+        afterEvaluate {
+            if (variant.name == 'debug') {
+                def taskGroovy = ":${project.name}:compile${variant.name.capitalize()}UnitTestGroovyWithGroovyc"
+                def taskJava = ":${project.name}:compile${variant.name.capitalize()}UnitTestJavaWithJavac"
+                def taskKotlin = ":${project.name}:compile${variant.name.capitalize()}UnitTestKotlin"
+                tasks.matching { it.name.startsWith('test') && it.name.endsWith('UnitTest') }.all {
+                    dependsOn taskGroovy, taskJava, taskKotlin
+                }
+            }
+        }
+    }
+
     testOptions {
         unitTests.all {
             // All the usual Gradle options.
@@ -47,18 +76,58 @@ android {
                 showStandardStreams = true
             }
         }
+        unitTests {
+            includeAndroidResources true
+            returnDefaultValues true
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'values/attrs.xml'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/notice.txt'
+        exclude 'DEPENDENCIES.txt'
+        exclude 'DEPENDENCIES'
+        exclude 'dependencies.txt'
+        exclude 'LICENSE.txt'
+        exclude 'LICENSE'
+        exclude 'license.txt'
+        exclude 'LGPL2.1'
+        exclude 'NOTICE.txt'
+        exclude 'NOTICE'
+        exclude 'notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'asm-license.txt'
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            eachDependency {
+                if ((requested.group == "org.jetbrains.kotlin") && (requested.name.startsWith("kotlin-stdlib"))) {
+                    useVersion("1.8.20")
+                }
+            }
+        }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
+
 }
 
 // Needed for pre-AGP 3.0 only
@@ -72,24 +141,37 @@ android {
 
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-ads:12.0.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+//    implementation 'com.google.android.gms:play-services-ads:12.0.1'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+//    implementation 'com.android.support:appcompat-v7:26.1.0'
 
+    implementation "androidx.core:core:1.12.0"
     testImplementation 'junit:junit:4.12'
 
     testImplementation project(':electricspock-electricspock')
-    testImplementation 'org.robolectric:robolectric:3.8'
-    testImplementation 'org.robolectric:shadows-support-v4:3.4-rc2'
-    testImplementation 'org.codehaus.groovy:groovy-all:2.4.13'
-    testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
+//    testImplementation 'org.robolectric:robolectric:3.8'
+//    testImplementation 'org.robolectric:shadows-support-v4:3.4-rc2'
+//    testImplementation 'org.codehaus.groovy:groovy-all:2.4.13'
+//    testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
+
+    api 'org.robolectric:robolectric:4.11.1'
+    api 'org.robolectric:robolectric:4.11.1'
+    api 'org.codehaus.groovy:groovy-all:3.0.20'
+    api "org.spockframework:spock-core:1.3-groovy-2.6"
 
     testImplementation( 'com.athaydes:spock-reports:1.3.2' ) {
         transitive = false // this avoids affecting your version of Groovy/Spock
     }
     testImplementation 'org.slf4j:slf4j-api:1.7.13' // needed by spock-reports
     testImplementation 'org.slf4j:slf4j-simple:1.7.13' // needed by spock-reports
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
+
+    implementation 'org.robolectric:android-all:14-robolectric-10818077'
+
 }
 

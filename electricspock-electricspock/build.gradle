@@ -17,13 +17,13 @@
 
 apply plugin: 'java-library'
 apply plugin: 'groovy'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 
 artifactId='electricspock'
 group='hkhc.electricspock'
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+//sourceCompatibility = "1.7"
+//targetCompatibility = "1.7"
 
 def coreProject = 'electricspock-core'
 
@@ -34,12 +34,15 @@ dependencies {
     testRuntimeOnly files("build/classes/groovy/test")
     testRuntimeOnly files("build/classes/groovy/main")
 
-    api 'org.codehaus.groovy:groovy-all:2.4.13'
-    api "org.spockframework:spock-core:1.1-groovy-2.4"
+//    api 'org.codehaus.groovy:groovy-all:2.4.13'
+//    api "org.spockframework:spock-core:1.1-groovy-2.4"
 
-    implementation 'cglib:cglib-nodep:3.2.4'
-    implementation 'org.jetbrains:annotations-java5:15.0'
-    implementation 'junit:junit:4.12'
+    api 'org.codehaus.groovy:groovy-all:3.0.20'
+    api "org.spockframework:spock-core:1.3-groovy-2.6"
+
+    api 'cglib:cglib-nodep:3.2.4'
+    api 'org.jetbrains:annotations-java5:15.0'
+    api 'junit:junit:4.13.2'
 
     api project(':electricspock-core')
 

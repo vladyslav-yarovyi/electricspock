@@ -8,7 +8,6 @@ import android.util.Log
 import hkhc.electricspock.ElectricSpecification
 import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.support.v4.SupportFragmentTestUtil
 import org.robolectric.util.FragmentTestUtil
 
 /**

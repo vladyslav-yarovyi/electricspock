@@ -6,7 +6,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.internal.SdkEnvironment;
+import org.robolectric.internal.AndroidSandbox;
 import org.robolectric.internal.bytecode.InstrumentationConfiguration;
 
 import java.lang.reflect.Method;
@@ -22,20 +22,8 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
 
     private Class<? extends Specification> specClass = null;
     private FrameworkMethod placeholderMethod = null;
-    private SdkEnvironment sdkEnvironment = null;
+    private AndroidSandbox sdkEnvironment = null;
     private Method bootstrapedMethod = null;
-
-    /*
-    A place holder test class to obtain a proper FrameworkMethod (which is actually a
-    RoboFrameworkTestMethod) by reusing existing code in RobolectricTestRunner
-     */
-    public static class PlaceholderTest {
-        /* Just a placeholder, the actual content of the test method is not important */
-        @Test
-        public void testPlaceholder() {
-
-        }
-    }
 
     /*
     Pretend to be a test runner for the placeholder test class. We don't actually run that test
@@ -85,7 +73,7 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
     Method createBootstrapedMethod() {
 
         FrameworkMethod placeholderMethod = getPlaceHolderMethod();
-        SdkEnvironment sdkEnvironment = getContainedSdkEnvironment();
+        AndroidSandbox sdkEnvironment = getContainedSdkEnvironment();
 
         // getTestClass().getJavaClass() should always be PlaceholderTest.class,
         // load under Robolectric's class loader
@@ -109,11 +97,11 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
 
     }
 
-    public SdkEnvironment getContainedSdkEnvironment() {
+    public AndroidSandbox getContainedSdkEnvironment() {
 
         if (sdkEnvironment==null) {
             sdkEnvironment = getSandbox(getPlaceHolderMethod());
-            configureShadows(getPlaceHolderMethod(), sdkEnvironment);
+            configureSandbox(sdkEnvironment, getPlaceHolderMethod());
         }
 
         return sdkEnvironment;
@@ -128,6 +116,11 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
         super.afterTest(getPlaceHolderMethod(), getBootstrapedMethod());
     }
 
+    public void finallyAfterTest() {
+        super.finallyAfterTest(getPlaceHolderMethod());
+    }
+
+
     /**
      * Get @Config declaration from class or method declaration.
      * If @Config is not available at method declaration, we delegate the task to the original
@@ -137,15 +130,22 @@ public class ContainedRobolectricTestRunner extends RobolectricTestRunner {
      */
     @Override
     public Config getConfig(Method method) {
-        Config baseConfig = super.getConfig(method);
-        Config config = specClass.getAnnotation(Config.class);
-        if (config==null) {
-            return baseConfig;
-        }
-        else {
-            return new Config.Builder(baseConfig).overlay(config).build();
+        Config baseConfig = null;
+        try {
+            baseConfig = super.getConfig(method);
+        } catch (Exception e) {
         }
 
+        Config config = specClass.getAnnotation(Config.class);
+        if (config == null && baseConfig == null) {
+            throw new UnsupportedOperationException();
+        } else if (config != null && baseConfig != null) {
+            return new Config.Builder(baseConfig).overlay(config).build();
+        } else if (config != null) {
+            return config;
+        } else {
+            return baseConfig;
+        }
     }
 
 

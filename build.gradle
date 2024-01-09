@@ -21,10 +21,17 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenLocal()
+        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+        maven {
+            url "https://jitpack.io"
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'org.codehaus.groovy:groovy-android-gradle-plugin:2.0.0'
+//        classpath 'com.android.tools.build:gradle:8.2.0'
+        classpath 'gradle.plugin.org.codehaus.groovy:groovy-android-gradle-plugin:3.0.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22" // for groovy test
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -33,6 +40,8 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenCentral()
+        mavenLocal()
         jcenter()
     }
 }
