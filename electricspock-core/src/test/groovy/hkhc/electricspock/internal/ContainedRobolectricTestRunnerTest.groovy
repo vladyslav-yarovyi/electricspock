@@ -31,7 +31,7 @@ import org.robolectric.internal.bytecode.InstrumentationConfiguration
 
 import java.lang.reflect.Method
 
-import static org.assertj.core.api.Assertions.assertThat
+//import static org.assertj.core.api.Assertions.assertThat
 
 /**
  * Created by herman on 9/10/2017.
